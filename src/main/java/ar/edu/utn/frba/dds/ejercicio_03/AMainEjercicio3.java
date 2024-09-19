@@ -1,9 +1,16 @@
 package ar.edu.utn.frba.dds.ejercicio_03;
 
+import ar.edu.utn.frba.dds.ProductoRepository;
+import ar.edu.utn.frba.dds.Repositorio;
+
+import java.util.Optional;
+
 public class AMainEjercicio3 {
   // corre el metodo main para persistir y ver como queda en tu DB!
 
   public static void main(String[] args) {
+
+    ProductoRepository productoRepository = new ProductoRepository();
 
     //* -------------- Marcas --------------
     Marca lays = new Marca();
@@ -39,12 +46,12 @@ public class AMainEjercicio3 {
     hamburguesa.setStock(30);
     hamburguesa.setPrecio(200.0);
 
-    Combo ComboHamburguesaConPapasYBebida = new Combo();
-    ComboHamburguesaConPapasYBebida.setNombre("Combo Hamburguesa con Papas y Bebida");
-    ComboHamburguesaConPapasYBebida.setMarca(marcaNachos);
-    ComboHamburguesaConPapasYBebida.agregarProducto(hamburguesa);
-    ComboHamburguesaConPapasYBebida.agregarProducto(papas);
-    ComboHamburguesaConPapasYBebida.agregarProducto(coca);
+    Combo comboHamburguesaConPapasYBebida = new Combo();
+    comboHamburguesaConPapasYBebida.setNombre("Combo Hamburguesa con Papas y Bebida");
+    comboHamburguesaConPapasYBebida.setMarca(marcaNachos);
+    comboHamburguesaConPapasYBebida.agregarProducto(hamburguesa);
+    comboHamburguesaConPapasYBebida.agregarProducto(papas);
+    comboHamburguesaConPapasYBebida.agregarProducto(coca);
 
 
     DescuentoFijo descuentoFijo = new DescuentoFijo();
@@ -56,5 +63,36 @@ public class AMainEjercicio3 {
 
     packagingDeHamburguesa.setPrecio(50.0);
     packagingDeHamburguesa.setProducto(hamburguesa);
+
+    Repositorio repositorio = new Repositorio();
+    repositorio.guardar(lays);
+    productoRepository.guardarProducto(hamburguesa);
+    productoRepository.guardarProducto(comboHamburguesaConPapasYBebida);
+
+    Packaging packagingDeCombo = new Packaging();
+    packagingDeCombo.setMarca(marcaNachos);
+    packagingDeCombo.setPrecio(50.0);
+    packagingDeCombo.setProducto(comboHamburguesaConPapasYBebida);
+
+    productoRepository.guardarProducto(packagingDeCombo);
+
+    DescuentoFijo descuentoFijo1 = new DescuentoFijo();
+    descuentoFijo1.setNombre("DescuentoFijo1");
+    descuentoFijo1.setValor(100.0);
+    descuentoFijo1.setProducto(comboHamburguesaConPapasYBebida);
+    descuentoFijo1.setMarca(marcaNachos);
+    productoRepository.guardarProducto(descuentoFijo1);
+
+
+
+    System.out.println(productoRepository.buscarTodos());
+
+    Optional<Producto> pack = productoRepository.buscarPorId(packagingDeCombo.getId());
+
+    pack.ifPresent(p -> System.out.println(p.precio()));
+
+    Optional<Producto> desc = productoRepository.buscarPorId(descuentoFijo1.getId());
+
+    desc.ifPresent(p -> System.out.println(p.precio()));
   }
 }
